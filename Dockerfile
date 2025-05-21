@@ -1,6 +1,6 @@
 # Dockerfile para Laravel + PHP 8 + Composer
 
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
 # Instalar extensiones y herramientas necesarias
 RUN apt-get update && apt-get install -y \
