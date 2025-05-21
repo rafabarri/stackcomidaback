@@ -26,3 +26,10 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 EXPOSE 9000
 
 CMD ["php-fpm"]
+
+COPY . /var/www/html
+
+# Copiar .env.example a .env para que exista el archivo
+RUN cp /var/www/html/.env.example /var/www/html/.env
+
+RUN composer install --no-dev --optimize-autoloader
