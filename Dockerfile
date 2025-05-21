@@ -18,7 +18,8 @@ COPY . .
 RUN cp .env.example .env
 
 # Instalar dependencias PHP con composer
-RUN composer install --no-dev --optimize-autoloader
+#RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Configurar permisos para Laravel
 RUN chown -R www-data:www-data storage bootstrap/cache

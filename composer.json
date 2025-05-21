@@ -96,8 +96,7 @@
             "@php artisan key:generate --ansi"
         ],
         "post-install-cmd": [
-        "@php artisan key:generate --ansi",
-        "@php artisan migrate --force"
+        "@php artisan key:generate --ansi"
         ]
     },
     "extra": {
