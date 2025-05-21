@@ -1,9 +1,12 @@
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
-# Instalar extensiones y herramientas necesarias
+# Instalar extensiones necesarias y herramientas
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev libcurl4-openssl-dev \
     && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd soap curl sockets
+
+# Habilitar mod_rewrite de Apache para Laravel
+RUN a2enmod rewrite
 
 # Instalar Composer globalmente
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -11,21 +14,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar archivos del proyecto al contenedor (en /var/www/html)
+# Copiar proyecto al contenedor
 COPY . .
 
-# Copiar .env.example a .env para que exista el archivo antes de composer install
+# Copiar .env.example a .env si no existe
 RUN cp .env.example .env
 
-# Instalar dependencias PHP con composer
-#RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias PHP (sin scripts que ejecuten migraciones)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Configurar permisos para Laravel
+# Configurar permisos de Laravel
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Exponer puerto para PHP-FPM
-EXPOSE 9000
+# Exponer puerto HTTP estándar
+EXPOSE 80
 
-# Comando para correr PHP-FPM
-CMD ["php-fpm"]
+# El contenedor ya arranca Apache por defecto
