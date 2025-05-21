@@ -1,5 +1,3 @@
-# Dockerfile para Laravel + PHP 8 + Composer
-
 FROM php:8.2-fpm
 
 # Instalar extensiones y herramientas necesarias
@@ -13,23 +11,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar los archivos del proyecto al contenedor
+# Copiar archivos del proyecto al contenedor (en /var/www/html)
 COPY . .
+
+# Copiar .env.example a .env para que exista el archivo antes de composer install
+RUN cp .env.example .env
 
 # Instalar dependencias PHP con composer
 RUN composer install --no-dev --optimize-autoloader
 
 # Configurar permisos para Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Exponer puerto para PHP-FPM
 EXPOSE 9000
 
+# Comando para correr PHP-FPM
 CMD ["php-fpm"]
-
-COPY . /var/www/html
-
-# Copiar .env.example a .env para que exista el archivo
-RUN cp /var/www/html/.env.example /var/www/html/.env
-
-RUN composer install --no-dev --optimize-autoloader
