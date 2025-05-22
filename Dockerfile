@@ -16,7 +16,8 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# 🛠️ Esta línea evita que se sobrescriba el entorno
+RUN echo "" > .env
 
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
