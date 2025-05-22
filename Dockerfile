@@ -5,8 +5,9 @@ RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev libcurl4-openssl-dev \
     && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd soap curl sockets
 
-# Habilitar mod_rewrite de Apache para Laravel
-RUN a2enmod rewrite
+# Habilitar mod_rewrite de Apache y cambiar DocumentRoot a /public
+RUN a2enmod rewrite && \
+    sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
 # Instalar Composer globalmente
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -18,7 +19,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Copiar .env.example a .env si no existe
-RUN cp .env.example .env
+RUN [ -f .env ] || cp .env.example .env
 
 # Instalar dependencias PHP (sin scripts que ejecuten migraciones)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
@@ -28,5 +29,3 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Exponer puerto HTTP estándar
 EXPOSE 80
-
-# El contenedor ya arranca Apache por defecto
