@@ -20,7 +20,7 @@ RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-RUN chown -R www-data:www-data storage bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache && chmod -R 775 storage bootstrap/cache
 
 EXPOSE 80
 
