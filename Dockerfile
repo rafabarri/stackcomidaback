@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd soap curl sockets
 
 # Habilitar mod_rewrite de Apache y cambiar DocumentRoot a /public
-RUN a2enmod rewrite && \
+RUN a2enmoRUN a2enmod rewrite headers && \
     sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
 # Instalar Composer globalmente
